@@ -5,6 +5,7 @@ import org.lanestel.application.dtos.device.CreateDeviceRequest;
 import org.lanestel.application.service.device.DeviceService;
 
 import jakarta.validation.constraints.NotNull;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -31,13 +32,31 @@ public class DeviceController {
         this.deviceService = deviceService;
     }
     
+    /**
+     * Creates a new device with MQTT account.
+     * 
+     * This endpoint handles device creation requests by delegating to the DeviceService.
+     * The service will create both the device and its associated MQTT account.
+     *
+     * @param request the device creation request containing device name and MQTT username
+     * @return Uni<Response> a reactive HTTP response containing the created device data or error
+     */
     @POST
     @Path("/create")
+    @WithTransaction 
     public Uni<Response> createDevice(@NotNull(message = "Request body is required") @Valid CreateDeviceRequest request){
-        Uni<Response> response = deviceService.createDevice(request);
-
-        return Uni.createFrom().item(Response.ok(
-            "hello"
-        ).build());
+        log.info("=== Device Creation Request START ===");
+        log.info("Device Name: " + request.getDeviceName());
+        log.info("MQTT Username: " + request.getMqttUsername());
+        
+        return deviceService.createDevice(request)
+            .onItem().invoke(response -> {
+                log.info("Device creation completed with status: " + response.getStatus());
+                log.info("=== Device Creation Request END ===");
+            })
+            .onFailure().invoke(throwable -> {
+                log.error("Device creation failed: " + throwable.getMessage(), throwable);
+                log.info("=== Device Creation Request END (FAILED) ===");
+            });
     }
 }

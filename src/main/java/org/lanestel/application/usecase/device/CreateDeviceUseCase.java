@@ -70,7 +70,7 @@ public class CreateDeviceUseCase implements ICreateDeviceUseCase {
             }
             String deviceUid = uidUtil.generateUid();
             String  rawPassword = passwordUtil.generatePassword(8);
-
+    
             MqttAccount mqttAccount = MqttAccount.builder()
                     .mqttId(mqttUsername)
                     .mqttPassword(rawPassword)
@@ -81,7 +81,7 @@ public class CreateDeviceUseCase implements ICreateDeviceUseCase {
                     .mqttAccount(mqttAccount)
                     .build();
             // Create device and return POJO with raw password
-            return Uni.createFrom().item(deviceRepository.createDevice(newDevice)).onItem().transform(device ->{
+            return deviceRepository.createDevice(newDevice).onItem().transform(device ->{
                 DevicePOJO devicePOJO = device.toPojo();
                 // Set raw password instead of hashed password for response
                 devicePOJO.setMqttPassword(rawPassword);

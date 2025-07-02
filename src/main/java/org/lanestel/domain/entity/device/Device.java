@@ -141,6 +141,7 @@ public class Device {
             .clientId(this.mqttAccount.getClientId())
             .mqttId(this.mqttAccount.getMqttId())
             .mqttPassword(this.mqttAccount.getMqttPassword())
+            .status(this.status.name())
             .createdAt(this.createdAt)
             .updatedAt(this.updatedAt)
             .build();

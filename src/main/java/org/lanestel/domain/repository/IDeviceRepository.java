@@ -2,7 +2,9 @@ package org.lanestel.domain.repository;
 
 import org.lanestel.domain.entity.device.Device;
 
+import io.smallrye.mutiny.Uni;
+
 
 public interface IDeviceRepository {
-    Device createDevice(Device device);
+    Uni<Device> createDevice(Device device);
 }
