@@ -1,9 +1,8 @@
 package org.lanestel.application.service.device;
 
-import java.util.Map;
-import java.util.HashMap;
 
-import org.lanestel.application.dtos.device.CreateDeviceRequest;
+import org.lanestel.application.dtos.device.request.CreateDeviceRequest;
+import org.lanestel.application.dtos.device.response.CreateDeviceResponse;
 import org.lanestel.domain.usecase.device.ICreateDeviceUseCase;
 
 import io.smallrye.mutiny.Uni;
@@ -35,30 +34,15 @@ public class DeviceService {
             .onItem().transform(devicePOJO -> {
                 // Success: return 201 Created with device data
                 return Response.status(Status.CREATED)
-                    .entity(devicePOJO)
+                    .entity(
+                        CreateDeviceResponse.builder()
+                            .deviceName(devicePOJO.getDeviceName())
+                            .mqttAccount(devicePOJO.getMqttId())
+                            .mqttPassword(devicePOJO.getMqttPassword())
+                            .clientId(devicePOJO.getClientId())
+                            .build()
+                    )
                     .build();
-            })
-            .onFailure().recoverWithItem(throwable -> {
-                // Handle different types of exceptions
-                if (throwable.getMessage().contains("already exists")) {
-                    // Conflict: MQTT username already exists
-                    Map<String, String> errorResponse = new HashMap<>();
-                    errorResponse.put("error", "Conflict");
-                    errorResponse.put("message", throwable.getMessage());
-                    
-                    return Response.status(Status.CONFLICT)
-                        .entity(errorResponse)
-                        .build();
-                } else {
-                    // Internal server error for other exceptions
-                    Map<String, String> errorResponse = new HashMap<>();
-                    errorResponse.put("error", "Internal Server Error");
-                    errorResponse.put("message", "Failed to create device");
-                    
-                    return Response.status(Status.INTERNAL_SERVER_ERROR)
-                        .entity(errorResponse)
-                        .build();
-                }
             });
     }
 }

@@ -1,10 +1,13 @@
 package org.lanestel.infrastructures.entity.mqtt_account_entity;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -69,17 +72,12 @@ public class MqttPermissionEntity extends PanacheEntity {
     private Permission permission;
     
     /**
-     * Priority for permission evaluation (higher number = higher priority)
-     * Used when multiple rules match the same topic
+     * List of allowed QoS levels for this permission
+     * Default includes all QoS levels: 0 (At most once), 1 (At least once), 2 (Exactly once)
      */
-    @Column(name = "priority")
-    private Integer priority;
-    
-    /**
-     * Optional description for this permission rule
-     */
-    @Column(name = "description", length = 500)
-    private String description;
+    @ElementCollection
+    @Builder.Default
+    private List<Integer> allowedQosLevels = Arrays.asList(0, 1, 2);
     
     /**
      * Timestamp when this permission was created
@@ -106,6 +104,11 @@ public class MqttPermissionEntity extends PanacheEntity {
             this.createdAt = now;
         }
         this.updatedAt = now;
+        
+        // Set default QoS levels if not already set
+        if (this.allowedQosLevels == null || this.allowedQosLevels.isEmpty()) {
+            this.allowedQosLevels = Arrays.asList(0, 1, 2);
+        }
     }
     
     /**
@@ -115,6 +118,15 @@ public class MqttPermissionEntity extends PanacheEntity {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    /**
+     * Checks if the specified QoS level is allowed for this permission
+     * @param qosLevel The QoS level to check (0, 1, or 2)
+     * @return true if the QoS level is allowed, false otherwise
+     */
+    public boolean isQosLevelAllowed(int qosLevel) {
+        return allowedQosLevels != null && allowedQosLevels.contains(qosLevel);
     }
     
     /**

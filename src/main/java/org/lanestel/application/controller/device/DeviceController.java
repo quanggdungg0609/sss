@@ -1,7 +1,7 @@
 package org.lanestel.application.controller.device;
 
 import org.jboss.logging.Logger;
-import org.lanestel.application.dtos.device.CreateDeviceRequest;
+import org.lanestel.application.dtos.device.request.CreateDeviceRequest;
 import org.lanestel.application.service.device.DeviceService;
 
 import jakarta.validation.constraints.NotNull;

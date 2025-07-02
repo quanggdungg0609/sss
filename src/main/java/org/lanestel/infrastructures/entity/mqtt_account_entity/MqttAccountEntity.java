@@ -56,7 +56,7 @@ public class MqttAccountEntity extends PanacheEntity {
     /**
      * MQTT client identifier
      */
-    @Column(name = "client_id", length = 100)
+    @Column(name = "client_id", length = 100, unique = true)
     private String clientId;
     
     /**

@@ -28,4 +28,16 @@ public class MqttRepository implements IMqttRepository {
                 throw new CheckMqttIdExistsException(throwable.getMessage(), throwable);
             });
     }
+
+    @Override
+    public Uni<Boolean> checkClientIdExists(String clientId) {
+        log.info("Checking Client ID ....");
+         return MqttAccountEntity.count("clientId", clientId)
+            .onItem().transform(count -> count > 0)
+            .onFailure().transform(throwable -> {
+                log.error(throwable);
+                throw new CheckMqttIdExistsException(throwable.getMessage(), throwable);
+            });
+    }
+
 }

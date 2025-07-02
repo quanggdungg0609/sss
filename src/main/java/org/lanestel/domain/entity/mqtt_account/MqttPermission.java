@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.lanestel.infrastructures.entity.mqtt_account_entity.MqttPermissionEntity;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Domain entity representing MQTT permissions for specific topics and actions.
@@ -40,15 +42,11 @@ public class MqttPermission {
     private Permission permission;
     
     /**
-     * Priority for permission evaluation (higher number = higher priority)
-     * Used when multiple rules match the same topic
+     * List of allowed QoS levels for this permission
+     * Default includes all QoS levels: 0 (At most once), 1 (At least once), 2 (Exactly once)
      */
-    private Integer priority;
-    
-    /**
-     * Optional description for this permission rule
-     */
-    private String description;
+    @Builder.Default
+    private List<Integer> allowedQosLevels = Arrays.asList(0, 1, 2);
     
     /**
      * Timestamp when this permission was created
@@ -76,8 +74,7 @@ public class MqttPermission {
             .topicPattern(entity.getTopicPattern())
             .action(mapActionFromEntity(entity.getAction()))
             .permission(mapPermissionFromEntity(entity.getPermission()))
-            .priority(entity.getPriority())
-            .description(entity.getDescription())
+            .allowedQosLevels(entity.getAllowedQosLevels())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
             .build();
@@ -92,8 +89,7 @@ public class MqttPermission {
             .topicPattern(this.topicPattern)
             .action(mapActionToEntity(this.action))
             .permission(mapPermissionToEntity(this.permission))
-            .priority(this.priority)
-            .description(this.description)
+            .allowedQosLevels(this.allowedQosLevels)
             .createdAt(this.createdAt)
             .updatedAt(this.updatedAt)
             .build();
@@ -117,8 +113,7 @@ public class MqttPermission {
         entity.setTopicPattern(this.topicPattern);
         entity.setAction(mapActionToEntity(this.action));
         entity.setPermission(mapPermissionToEntity(this.permission));
-        entity.setPriority(this.priority);
-        entity.setDescription(this.description);
+        entity.setAllowedQosLevels(this.allowedQosLevels);
         // Note: createdAt and updatedAt are managed by JPA lifecycle callbacks
     }
     
@@ -231,20 +226,28 @@ public class MqttPermission {
     }
     
     /**
-     * Checks if this permission has higher priority than another
-     * @param other The other permission to compare with
-     * @return true if this permission has higher priority
+     * Checks if the specified QoS level is allowed for this permission
+     * @param qosLevel The QoS level to check (0, 1, or 2)
+     * @return true if the QoS level is allowed, false otherwise
      */
-    public boolean hasHigherPriorityThan(MqttPermission other) {
-        if (this.priority == null && other.getPriority() == null) {
-            return false;
-        }
-        if (this.priority == null) {
-            return false;
-        }
-        if (other.getPriority() == null) {
-            return true;
-        }
-        return this.priority > other.getPriority();
+    public boolean isQosLevelAllowed(int qosLevel) {
+        return allowedQosLevels != null && allowedQosLevels.contains(qosLevel);
+    }
+    
+    /**
+     * MQTT action types
+     */
+    public enum MqttAction {
+        PUBLISH,
+        SUBSCRIBE,
+        ALL
+    }
+    
+    /**
+     * Permission types
+     */
+    public enum Permission {
+        ALLOW,
+        DENY
     }
 }

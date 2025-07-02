@@ -152,20 +152,22 @@ public class MqttAccount {
     }
     
     /**
-     * Checks if this account has a specific permission for a topic and action
+     * Checks if this account has a specific permission for a topic, action, and QoS level
      * @param topic The MQTT topic to check
      * @param action The MQTT action to check
-     * @return true if permission is granted, false otherwise
+     * @param qosLevel The QoS level to check (0, 1, or 2)
+     * @return true if permission is granted for the specified QoS level, false otherwise
      */
-    public boolean hasPermission(String topic, MqttAction action) {
+    public boolean hasPermission(String topic, MqttPermission.MqttAction action, int qosLevel) {
         if (permissions == null || permissions.isEmpty()) {
             return false;
         }
         
         return permissions.stream()
-            .filter(p -> p.getPermission() == Permission.ALLOW)
+            .filter(p -> p.getPermission() == MqttPermission.Permission.ALLOW)
             .anyMatch(p -> p.matchesTopic(topic) && 
-                     (p.getAction() == action || p.getAction() == MqttAction.ALL));
+                     (p.getAction() == action || p.getAction() == MqttPermission.MqttAction.ALL) &&
+                     p.isQosLevelAllowed(qosLevel));
     }
     
 }

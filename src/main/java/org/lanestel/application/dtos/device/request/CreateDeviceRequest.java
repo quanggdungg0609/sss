@@ -1,4 +1,4 @@
-package org.lanestel.application.dtos.device;
+package org.lanestel.application.dtos.device.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
