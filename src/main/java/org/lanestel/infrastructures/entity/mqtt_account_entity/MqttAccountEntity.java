@@ -17,16 +17,14 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Entity representing MQTT account credentials and associated permissions.
  * Each account can have multiple permissions for different topics.
  */
-@Getter
-@Setter
+@Data
 @Entity
 @Builder
 @Cacheable

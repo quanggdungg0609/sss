@@ -23,6 +23,6 @@ public class MqttConsumer {
         String payload = new String(message.getPayload());
         log.info("Received telemetry from topic '" + topic + "': " + payload);
         return Uni.createFrom().voidItem();
-    
+
     }
 }

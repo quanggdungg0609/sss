@@ -20,18 +20,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import jakarta.persistence.Index;
 
 /**
  * Entity representing a device with its associated MQTT account.
  * Each device has a one-to-one relationship with an MQTT account.
  */
-@Getter
-@Setter
+@Data  
 @Entity
 @Builder
 @Cacheable
@@ -109,6 +105,22 @@ public class DeviceEntity extends PanacheEntity {
     public static enum DeviceStatus {
         ACTIVE,
         INACTIVE,
+    }
+
+    /**
+     * Sets the MQTT account for this device
+     * @param mqttAccount The MQTT account to associate with this device
+     */
+    public void setMqttAccount(MqttAccountEntity mqttAccount) {
+        this.mqttAccount = mqttAccount;
+    }
+    
+    /**
+     * Sets the status of this device
+     * @param status The device status to set
+     */
+    public void setStatus(DeviceStatus status) {
+        this.status = status;
     }
 }
 

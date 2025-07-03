@@ -19,20 +19,17 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Entity representing sensor data received from devices via MQTT.
  * Each sensor data record is associated with a specific device and contains
  * the timestamp when data was sent and the actual sensor data in JSONB format.
  */
-
+@Data
 @Entity
 @Builder
-@Getter
-@Setter
 @Cacheable
 @AllArgsConstructor
 @NoArgsConstructor
