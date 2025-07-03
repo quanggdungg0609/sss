@@ -43,10 +43,6 @@ public class MqttAuthorizationUseCase implements IMqttAuthorizationUseCase {
      */
     @Override
     public Uni<Boolean> authorize(String username, String clientId, String topic, String action, int qosLevel) {
-        log.info("Authorizing MQTT operation - Username: " + username + 
-                ", ClientId: " + clientId + ", Topic: " + topic + 
-                ", Action: " + action + ", QoS: " + qosLevel);
-        
         // Validate input parameters
         if (username == null || username.trim().isEmpty() ||
             topic == null || topic.trim().isEmpty() ||

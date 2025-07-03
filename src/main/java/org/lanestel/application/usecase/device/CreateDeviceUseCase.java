@@ -156,7 +156,7 @@ public class CreateDeviceUseCase implements ICreateDeviceUseCase {
         
         // Permission for telemetry topic (PUBLISH)
         permissions.add(MqttPermission.builder()
-            .topicPattern("sensor/" + clientId + "/telemetry")
+            .topicPattern("sensors/" + clientId + "/telemetry")
             .action(MqttAction.PUBLISH)
             .permission(Permission.ALLOW)
             .allowedQosLevels(defaultQosLevels)
@@ -164,7 +164,7 @@ public class CreateDeviceUseCase implements ICreateDeviceUseCase {
         
         // Permission for status topic (PUBLISH) - for LWT messages
         permissions.add(MqttPermission.builder()
-            .topicPattern("sensor/" + clientId + "/status")
+            .topicPattern("sensors/" + clientId + "/status")
             .action(MqttAction.PUBLISH)
             .permission(Permission.ALLOW)
             .allowedQosLevels(defaultQosLevels)
@@ -172,7 +172,7 @@ public class CreateDeviceUseCase implements ICreateDeviceUseCase {
         
         // Permission for command topic (SUBSCRIBE)
         permissions.add(MqttPermission.builder()
-            .topicPattern("sensor/" + clientId + "/command")
+            .topicPattern("sensors/" + clientId + "/command")
             .action(MqttAction.SUBSCRIBE)
             .permission(Permission.ALLOW)
             .allowedQosLevels(defaultQosLevels)

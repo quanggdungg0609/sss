@@ -44,9 +44,7 @@ public class MqttAuthenticationUseCase implements IMqttAuthenticationUseCase {
      * @return Uni<Boolean> true if authentication successful, false otherwise
      */
     @Override
-    public Uni<Boolean> authenticate(String username, String password, String clientId) {
-        log.info("Authenticating MQTT client - Username: " + username + ", ClientId: " + clientId);
-        
+    public Uni<Boolean> authenticate(String username, String password, String clientId) {        
         // Validate input parameters
         if (username == null || username.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {

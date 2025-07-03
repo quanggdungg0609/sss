@@ -52,20 +52,13 @@ public class MqttController {
     @Path("/auth")
     @WithSession
     public Uni<Response> authentication(
-            @NotNull(message = "Request body is required") @Valid EmqxAuthRequest request) {
-        
-        log.info("=== EMQX MQTT Auth Request START ===");
-        log.info("Request: " + request);
-        log.info("Client ID: " + request.getClientId());
-        log.info("Username: " + request.getUsername());
-        log.info("Password: " + request.getPassword());
-        log.info("Peer Host: " + request.getPeerHost());
-        log.info("Mountpoint: " + request.getMountpoint());
-        
+            @NotNull(message = "Request body is required") @Valid EmqxAuthRequest request
+    ) {
+        log.info("Received authentication request for username: " + request.getUsername() + 
+                ", clientId: " + request.getClientId());
         return mqttService.authenticate(request)
             .onItem().invoke(response -> {
                 log.info("Authentication response: " + response.getEntity());
-                log.info("=== EMQX MQTT Auth Request END ===");
             });
     }
     
@@ -78,20 +71,13 @@ public class MqttController {
     @Path("/acl")
     @WithSession
     public Uni<Response> authorization(
-            @NotNull(message = "Request body is required") @Valid EmqxAclRequest request) {
-        
-        log.info("=== EMQX MQTT ACL Request START ===");
-        log.info("Request: " + request);
-        log.info("Client ID: " + request.getClientId());
-        log.info("Username: " + request.getUsername());
-        log.info("Topic: " + request.getTopic());
-        log.info("Action: " + request.getAction());
-        log.info("Peer Host: " + request.getPeerHost());
-        
+            @NotNull(message = "Request body is required") @Valid EmqxAclRequest request
+    ) {
+        log.info("Received authorization request for username: " + request.getUsername() + 
+                ", topic: " + request.getTopic() + ", action: " + request.getAction());
         return mqttService.authorize(request)
             .onItem().invoke(response -> {
                 log.info("Authorization response: " + response.getEntity());
-                log.info("=== EMQX MQTT ACL Request END ===");
             });
     }
 }
