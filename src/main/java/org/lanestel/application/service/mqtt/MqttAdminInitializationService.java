@@ -16,7 +16,6 @@ import org.lanestel.infrastructures.entity.mqtt_account_entity.MqttPermissionEnt
  * Service to automatically create admin account when application starts.
  * Admin account will have full permissions on all MQTT topics.
  */
-@Startup
 @ApplicationScoped
 public class MqttAdminInitializationService {
 
