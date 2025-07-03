@@ -21,20 +21,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.Index;
 
 /**
  * Entity representing a device with its associated MQTT account.
  * Each device has a one-to-one relationship with an MQTT account.
  */
-@Data  
+@Getter
+@Setter
 @Entity
 @Builder
 @Cacheable
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @Table(
     name = "devices",
     indexes = {

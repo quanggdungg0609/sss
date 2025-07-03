@@ -1,6 +1,5 @@
 package org.lanestel.application.service.mqtt;
 
-import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;

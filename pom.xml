@@ -38,6 +38,11 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-reactive-panache</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-utils-hibernate-60</artifactId>
+            <version>3.5.1</version>
+        </dependency>
         <!-- <dependency>
             <groupId>io.quarkiverse.hivemqclient</groupId>
             <artifactId>quarkus-hivemq-client</artifactId>

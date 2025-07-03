@@ -17,21 +17,21 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entity representing MQTT account credentials and associated permissions.
  * Each account can have multiple permissions for different topics.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @Cacheable
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @Table(
     name = "mqtt_accounts",
     indexes = {
