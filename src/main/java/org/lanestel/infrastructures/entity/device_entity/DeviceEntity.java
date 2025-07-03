@@ -110,22 +110,6 @@ public class DeviceEntity extends PanacheEntity {
         ACTIVE,
         INACTIVE,
     }
-
-    /**
-     * Sets the MQTT account for this device
-     * @param mqttAccount The MQTT account to associate with this device
-     */
-    public void setMqttAccount(MqttAccountEntity mqttAccount) {
-        this.mqttAccount = mqttAccount;
-    }
-    
-    /**
-     * Sets the status of this device
-     * @param status The device status to set
-     */
-    public void setStatus(DeviceStatus status) {
-        this.status = status;
-    }
 }
 
 

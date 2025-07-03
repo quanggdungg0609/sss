@@ -104,31 +104,4 @@ public class SensorDataEntity extends PanacheEntity {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    /**
-     * Sets the device for this sensor data record.
-     * 
-     * @param device The device that sent this sensor data
-     */
-    public void setDevice(DeviceEntity device) {
-        this.device = device;
-    }
-
-    /**
-     * Sets the date when the sensor data was captured/sent.
-     * 
-     * @param date The timestamp when data was sent from the device
-     */
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    /**
-     * Sets the sensor data as a Map for type-safe JSON handling.
-     * 
-     * @param data The sensor data as Map<String, Object>
-     */
-    public void setData(Map<String, Object> data) {
-        this.data = data;
-    }
 }
