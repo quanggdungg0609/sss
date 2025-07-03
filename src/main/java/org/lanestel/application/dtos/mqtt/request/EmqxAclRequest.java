@@ -21,9 +21,6 @@ public class EmqxAclRequest {
     @JsonProperty("action")
     private String action; // "publish" or "subscribe"
     
-    @JsonProperty("access")
-    private String access; // "1" for subscribe, "2" for publish
-    
     @JsonProperty("peerhost")
     private String peerHost;
     

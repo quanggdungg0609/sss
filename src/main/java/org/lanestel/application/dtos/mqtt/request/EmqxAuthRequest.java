@@ -21,9 +21,6 @@ public class EmqxAuthRequest {
     @JsonProperty("peerhost")
     private String peerHost;
     
-    @JsonProperty("protocol")
-    private String protocol;
-    
     @JsonProperty("mountpoint")
     private String mountpoint;
 }

@@ -106,6 +106,9 @@ public class MqttAccountEntity extends PanacheEntity {
      * @param permission The permission to add
      */
     public void addPermission(MqttPermissionEntity permission) {
+        if (permissions == null) {
+            permissions = new ArrayList<>();
+        }
         permissions.add(permission);
         permission.setMqttAccount(this);
     }

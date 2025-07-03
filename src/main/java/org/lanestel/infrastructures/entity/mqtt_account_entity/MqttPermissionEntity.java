@@ -75,7 +75,7 @@ public class MqttPermissionEntity extends PanacheEntity {
      * List of allowed QoS levels for this permission
      * Default includes all QoS levels: 0 (At most once), 1 (At least once), 2 (Exactly once)
      */
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<Integer> allowedQosLevels = Arrays.asList(0, 1, 2);
     
