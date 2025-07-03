@@ -75,6 +75,7 @@ public class MqttAccountEntity extends PanacheEntity {
      * List of permissions associated with this MQTT account.
      * Uses LAZY loading for performance optimization.
      */
+    @Builder.Default
     @OneToMany(
         mappedBy = "mqttAccount", 
         cascade = CascadeType.ALL, 

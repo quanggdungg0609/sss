@@ -84,7 +84,7 @@ public class MqttService {
                 request.getClientId(),
                 request.getTopic(),
                 request.getAction(),
-                qosLevel
+                request.getQos() != null ? request.getQos() : qosLevel
             )
             .onItem().transform(isAuthorized -> {
                 EmqxResponse emqxResponse = isAuthorized ? 
@@ -100,17 +100,5 @@ public class MqttService {
                 log.error("Authorization service error", throwable);
                 return Response.ok(EmqxResponse.deny()).build();
             });
-    }
-    
-    /**
-     * Extracts QoS level from EMQX access field
-     * @param access The access field from EMQX request
-     * @return QoS level (defaults to 0 if invalid)
-     */
-    private int extractQosLevel(String access) {
-        // EMQX typically sends access as "1" for subscribe, "2" for publish
-        // For simplicity, we'll default to QoS 0 for all operations
-        // You can enhance this based on your specific requirements
-        return 0;
     }
 }

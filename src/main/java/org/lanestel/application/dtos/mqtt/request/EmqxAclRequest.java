@@ -21,6 +21,9 @@ public class EmqxAclRequest {
     @JsonProperty("action")
     private String action; // "publish" or "subscribe"
     
+    @JsonProperty("qos")
+    private Integer qos; // QoS level: 0, 1, or 2
+    
     @JsonProperty("peerhost")
     private String peerHost;
     

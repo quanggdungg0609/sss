@@ -51,6 +51,7 @@ public class MqttAccount {
     /**
      * List of permissions associated with this MQTT account
      */
+    @Builder.Default
     private List<MqttPermission> permissions = new ArrayList<>();
     
     /**
