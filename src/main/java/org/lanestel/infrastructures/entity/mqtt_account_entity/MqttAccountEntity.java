@@ -18,6 +18,7 @@ import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Cacheable
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Table(
     name = "mqtt_accounts",
     indexes = {
