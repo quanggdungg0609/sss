@@ -1,8 +1,11 @@
 package org.lanestel.infrastructures.entity.device_entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lanestel.infrastructures.entity.mqtt_account_entity.MqttAccountEntity;
+import org.lanestel.infrastructures.entity.threshold_entity.ThresholdEntity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import jakarta.persistence.Cacheable;
@@ -13,6 +16,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -20,7 +24,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.Index;
 
@@ -34,7 +37,6 @@ import jakarta.persistence.Index;
 @Cacheable
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @Table(
     name = "devices",
     indexes = {
@@ -82,6 +84,16 @@ public class DeviceEntity extends PanacheEntity {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private DeviceStatus status;
+
+
+    @OneToMany(
+        mappedBy = "device", 
+        cascade = CascadeType.ALL, 
+        fetch = FetchType.LAZY, // Tải LAZY để tối ưu hiệu năng
+        orphanRemoval = true
+    )
+    @Builder.Default
+    private List<ThresholdEntity> thresholds = new ArrayList<>();
 
     /**
      * Automatically sets the creation timestamp before persisting the entity

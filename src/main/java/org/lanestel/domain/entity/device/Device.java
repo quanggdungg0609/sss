@@ -44,6 +44,7 @@ public class Device {
     /**
      * Current status of the device
      */
+    @Builder.Default
     private Status status = Status.ACTIVE;
 
     /**

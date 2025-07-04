@@ -3,7 +3,9 @@ package org.lanestel.infrastructures.entity.sensor_data_entity;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.hibernate.annotations.Type;
+// Thay thế import
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.lanestel.infrastructures.entity.device_entity.DeviceEntity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
@@ -68,7 +70,12 @@ public class SensorDataEntity extends PanacheEntity {
      * camera data, or other device-specific information.
      * The Map allows for easy access to nested JSON properties.
      */
-    @Type(io.hypersistence.utils.hibernate.type.json.JsonType.class)
+   
+    /**
+     * Sensor data in JSONB format stored as Map for type-safe access.
+     */
+    
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "data", nullable = false, columnDefinition = "jsonb")
     private Map<String, Object> data;
 
