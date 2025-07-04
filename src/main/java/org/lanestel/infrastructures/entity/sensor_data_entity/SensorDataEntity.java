@@ -16,6 +16,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PostPersist;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -102,6 +103,7 @@ public class SensorDataEntity extends PanacheEntity {
         this.updatedAt = now;
     }
 
+   
     /**
      * Automatically updates the modification timestamp before updating the entity.
      * Called automatically by JPA before the entity is updated in the database.

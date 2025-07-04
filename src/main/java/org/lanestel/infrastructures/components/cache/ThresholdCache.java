@@ -1,14 +1,12 @@
 package org.lanestel.infrastructures.components.cache;
 
 
-import java.util.Optional;
 import java.util.function.Function;
 
-import org.lanestel.infrastructures.entity.threshold_entity.ThresholdEntity;
+import org.lanestel.infrastructures.entity.threshhold_cache_item.ThresholdCacheItem;
 
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
-import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -24,8 +22,8 @@ public class ThresholdCache {
         this.cache = cache;
     }
 
-    public Uni<ThresholdEntity> getThreshold(String cacheKey, Function<String, Uni<ThresholdEntity>> fallback) {
-        Uni<Uni<ThresholdEntity>> nestedUni = cache.get(cacheKey, fallback);
+    public Uni<ThresholdCacheItem> getThreshold(String cacheKey, Function<String, Uni<ThresholdCacheItem>> fallback) {
+        Uni<Uni<ThresholdCacheItem>> nestedUni = cache.get(cacheKey, fallback);
         return nestedUni.chain(innerUni -> innerUni);
     }
 

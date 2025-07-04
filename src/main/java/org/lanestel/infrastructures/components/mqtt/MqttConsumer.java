@@ -9,7 +9,6 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.messaging.mqtt.MqttMessage;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import io.quarkus.hibernate.reactive.panache.common.WithSession;
 
 /**
  * MQTT Consumer responsible for processing incoming MQTT messages.
