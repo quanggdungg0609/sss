@@ -11,5 +11,4 @@ public class ThresholdDAO implements PanacheRepository<ThresholdEntity>{
     public Uni<ThresholdEntity>findByDeviceNameAndSensorKey(String deviceName, String sensorKey){
         return find("deviceName = ?1 and sensorKey = ?2", deviceName, sensorKey).firstResult();
     }
-
 }

@@ -1,44 +1,33 @@
 package org.lanestel.infrastructures.components.mqtt.handler;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.lanestel.infrastructures.components.cache.ThresholdCache;
-import org.lanestel.infrastructures.components.threshold_check.ThresholdCheckComponent.SensorDataSavedEvent;
+import java.util.Map;
+
+import org.lanestel.infrastructures.components.threshold_check.SensorDataSavedEvent;
+import org.lanestel.infrastructures.components.threshold_check.ThresholdCheckComponent;
 import org.lanestel.infrastructures.dao.device.DeviceDAO;
 import org.lanestel.infrastructures.dao.sensor_data.SensorDataDAO;
-import org.lanestel.infrastructures.dao.threshold.ThresholdDAO;
-import org.lanestel.infrastructures.entity.threshhold_cache_item.ThresholdCacheItem;
-import org.lanestel.infrastructures.entity.device_entity.DeviceEntity;
-import org.lanestel.infrastructures.entity.threshold_entity.ThresholdEntity;
+
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
-import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.messaging.mqtt.MqttMessage;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
-
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 @ApplicationScoped
 public class TelemetryMessageHandler extends IMqttMessageHandler {
     @Inject
     ObjectMapper objectMapper;
-
-    @Inject
-    ThresholdCache thresholdCache;
-
-    @Inject
-    Event<SensorDataSavedEvent> sensorDataSavedEvent;
 
     @Inject
     DeviceDAO deviceDAO;
@@ -47,7 +36,7 @@ public class TelemetryMessageHandler extends IMqttMessageHandler {
     SensorDataDAO sensorDataDAO;
 
     @Inject
-    ThresholdDAO thresholdDAO;
+    Vertx vertx;
 
 
     @Override
@@ -75,28 +64,33 @@ public class TelemetryMessageHandler extends IMqttMessageHandler {
             return Uni.createFrom().voidItem();
         }
 
-        return deviceDAO.findByMqttClientId(clientId)
-            .onItem().transformToUni(deviceEntity -> {
-                if(deviceEntity != null){
-                    log.info("Creating SensorDataEntity for device: " + deviceEntity.getDeviceName() + " with data: " + dataMap);
-                    
+       return Panache.withTransaction(() -> 
+            deviceDAO.findByMqttClientId(clientId)
+                .onItem().ifNotNull().transformToUni(deviceEntity -> {
+                    log.info("Tx1: Found device " + deviceEntity.getDeviceName() + ". Saving sensor data.");
                     LocalDateTime eventDate = (timestampStr != null)
                                         ? ZonedDateTime.parse(timestampStr).toLocalDateTime()
                                         : LocalDateTime.now(ZoneId.of("UTC"));
                     
                     return sensorDataDAO.create(deviceEntity, eventDate, dataMap)
-                        .onItem().call(savedEntity -> {
-                            log.info("Successfully saved SensorDataEntity for device: " + deviceEntity.getDeviceName());
-                            sensorDataSavedEvent.fireAsync(new SensorDataSavedEvent(deviceEntity.id, clientId, dataMap));
-                            return Uni.createFrom().voidItem();
-                        })
-                        .onFailure().invoke(throwable -> {
-                            log.error("Failed to save SensorDataEntity for device: " + deviceEntity.id, throwable);
-                        }).replaceWithVoid();
-                }else{
-                    log.warn("No device found for client: " + clientId);
-                    return Uni.createFrom().voidItem();
-                }
-            }).replaceWithVoid();
+                        .map(savedEntity -> deviceEntity); // Pass the device entity forward
+                })
+        )
+        // --- CHAINING: Publish to Event Bus AFTER Transaction 1 Succeeds ---
+        .onItem().ifNotNull().invoke(deviceEntity -> {
+            log.info("Publishing to event bus for device ID: " + deviceEntity.id);
+            
+            // Create a payload object
+            SensorDataSavedEvent payloadObject = new SensorDataSavedEvent(
+                deviceEntity.id,
+                clientId,
+                dataMap
+            );
+
+            // Publish the object to the event bus. Vert.x will use Jackson to serialize it.
+            vertx.eventBus().publish(ThresholdCheckComponent.THRESHOLD_CHECK_ADDRESS, JsonObject.mapFrom(payloadObject));
+        })
+        .onFailure().invoke(e -> log.error("Transaction 1 (Save Data) failed for topic: " + message.getTopic(), e))
+        .replaceWithVoid();
     }
 }
