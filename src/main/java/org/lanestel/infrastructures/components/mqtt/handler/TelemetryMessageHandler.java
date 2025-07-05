@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 
 import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.lanestel.infrastructures.components.threshold_check.SensorDataSavedEvent;
 import org.lanestel.infrastructures.components.threshold_check.ThresholdCheckComponent;
 import org.lanestel.infrastructures.dao.device.DeviceDAO;
@@ -26,6 +27,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 @ApplicationScoped
 public class TelemetryMessageHandler extends IMqttMessageHandler {
+    @Inject
+    Logger log;
+
     @Inject
     ObjectMapper objectMapper;
 
@@ -49,7 +53,9 @@ public class TelemetryMessageHandler extends IMqttMessageHandler {
     public Uni<Void> handle(MqttMessage<byte[]> message) {
         Map<String, Object> payloadMap;
         try {
-            payloadMap = objectMapper.readValue(message.getPayload(), new TypeReference<>() {});
+            String data = new String(message.getPayload());
+            log.info(data);
+            payloadMap = objectMapper.readValue(data, new TypeReference<>() {});
         } catch (Exception e) {
             log.error("Failed to parse telemetry payload for topic: " + message.getTopic(), e);
             return Uni.createFrom().failure(e);

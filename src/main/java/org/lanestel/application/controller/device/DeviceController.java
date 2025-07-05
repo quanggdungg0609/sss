@@ -2,6 +2,7 @@ package org.lanestel.application.controller.device;
 
 import org.jboss.logging.Logger;
 import org.lanestel.application.dtos.device.request.CreateDeviceRequest;
+import org.lanestel.application.dtos.device.request.UpdateThresholdRequest;
 import org.lanestel.application.service.device.DeviceService;
 
 import jakarta.validation.constraints.NotNull;
@@ -58,5 +59,14 @@ public class DeviceController {
                 log.error("Device creation failed: " + throwable.getMessage(), throwable);
                 log.info("=== Device Creation Request END (FAILED) ===");
             });
+    }
+
+    @POST
+    @Path("/update_threshold")
+    @WithTransaction
+    public Uni<Response> updateThreshold(
+        @NotNull(message = "Request body is required") @Valid UpdateThresholdRequest request
+    ){
+        return null;
     }
 }

@@ -45,7 +45,6 @@ public class MqttConsumer {
         String topicType = getLastSegmentFromTopic(topic);
         
         log.info("Processing MQTT message for topic: " + topic + ", type: " + topicType);
-
         IMqttMessageHandler handler = dispatcher.getHandler(topicType);
 
         if (handler != null) {
