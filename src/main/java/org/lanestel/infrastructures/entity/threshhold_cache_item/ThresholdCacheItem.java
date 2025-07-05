@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import org.lanestel.infrastructures.entity.threshold_entity.ThresholdEntity;
 
 import lombok.Builder;
-import lombok.Data;
 
 @Builder
 public record ThresholdCacheItem(
